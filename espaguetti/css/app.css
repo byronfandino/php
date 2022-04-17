@@ -1,0 +1,72 @@
+*{
+    margin: 0;
+    padding: 0;
+}
+
+body{
+    font-family: Arial, Helvetica, sans-serif;
+    font-size: 17px;
+    background-image: radial-gradient( circle farthest-corner at 10% 20%,  rgba(37,145,251,0.98) 0.1%, rgba(0,7,128,1) 99.8% );
+    min-height: 100vh;
+}
+
+main{
+    height: 95vh;
+    display: flex;
+    flex-flow: column wrap;
+    justify-content: center;
+    align-items: center;
+}
+
+.formulario{
+    width:400px;
+    padding:20px;
+    box-shadow: 0px 0px 5px rgb(134, 134, 134);
+    background-color: #fff;
+}
+
+.formulario > .campo{
+    display: flex;
+    flex-flow: row nowrap;
+    align-items: center;
+    margin-bottom:10px;
+}
+
+.formulario label{
+    width:120px;
+}
+
+.formulario input,
+.formulario select{
+    width: 100%;
+    font-size: 14px;
+    padding: 5px;
+}
+
+.formulario input[type=submit]{
+    padding:8px;
+    border-radius: 5px;
+    font-size: 15px;
+}
+
+.revisar{
+    background-color: white;
+    text-align: justify;
+    padding: 20px;
+    width: 100%;
+}
+
+.errores{
+    width: 500px;
+}
+
+.alerta.error{
+    background-color: red;
+    color:white;
+    font-weight: bold;
+    width: 100%;
+    text-align: center;
+    margin-bottom: 10px;
+    padding: 10px;
+
+}
