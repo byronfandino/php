@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="css/app.css">
+    <link rel="stylesheet" href="../css/app.css">
     <title>Formulario</title>
 </head>
 <body>
@@ -15,12 +15,16 @@
     //incluimos la conexión de la base de datos 
     $db = conectardb();
 
+    //Consultar las profesiones para listarlas en el select del formulario
+    $profesiones = "SELECT * FROM tblprofesion ORDER BY nombre ASC";
+    $resultado = mysqli_query($db, $profesiones);
+
     //Inicializamos las variables en blanco ya que estas se encuentra en el atributo value del formulario
     $nombre = "";
     $edad = "";
     $email = "";
     $imagen = "";
-    $profesion = "";
+    $profesionId = "";
 
     //Creamos un arreglo de errores 
     $errores = [];
@@ -33,7 +37,7 @@
         $edad = $_POST['edad'];
         $email = $_POST['email'];
         $imagen = $_POST['imagen'];
-        $profesion = $_POST['profesion'];
+        $profesionId = $_POST['profesionId'];
 
         //Verificamos si se diligenció cada uno de los campos
         if(!$nombre){
@@ -52,7 +56,7 @@
             $errores [] = "No se seleccionó ninguna imagen";
         }
 
-        if(!$profesion){
+        if(!$profesionId){
             $errores []= "El campo Profesión es obligatorio";
         }
 
@@ -62,9 +66,16 @@
           guardaremos el nombre de la imagen en la base de datos */
         if(empty($errores)){
 
-            $query = "INSERT INTO tblcliente ( nombre, edad, email, imagen, profesion) VALUES (";
-            $query .= "'${nombre}', ${edad}, '${email}', '${imagen}', '${profesion}' )";
-            echo $query;
+            $query = "INSERT INTO tblcliente ( nombre, edad, email, imagen, profesionId) VALUES (";
+            $query .= "'${nombre}', ${edad}, '${email}', '${imagen}', '${profesionId}' )";
+            
+            //Insertar el resgistro en la base de datos
+            $resultado = mysqli_query($db, $query);
+
+            if ($resultado){
+                //Redireccionar al usuario
+                header('Location: /admin');
+            }
         }    
     }
 ?>
@@ -100,11 +111,18 @@
             <input type="file" name="imagen" id="imagen">
         </div>
         <div class="campo">
-            <label for="profesion">Profesión</label>
-            <select name="profesion" id="profesion">
-                <option value="" selected>-- Seleccione una opción--</option>
-                <option value="medico" <?php echo $profesion=='medico' ? 'selected' : '' ?> >Médico</option>
-                <option value="ingeniero" <?php echo $profesion=='ingeniero' ? 'selected' : '' ?>>Ingeniero</option>
+            <label for="profesionId">Profesión</label>
+            <select name="profesionId" id="profesionId">
+
+                <option value="">-- Seleccione una opción--</option>
+                
+                <?php while($profesion = mysqli_fetch_assoc($resultado)) : ?>
+                    <option <?php echo $profesion['id'] === $profesionId ? 'selected' : ''; ?>
+                        value="<?php echo $profesion['id']; ?>"> 
+                            <?php echo $profesion['nombre']; ?> 
+                    </option>
+                <?php endwhile; ?>
+
             </select>
         </div>
 
@@ -113,5 +131,6 @@
     </form>
         
 </main>
+
 </body>
 </html>
