@@ -23,11 +23,11 @@
     if ($_SERVER['REQUEST_METHOD']  === 'POST'){
 
         //Obtenemos los datos entregados por el formulario
-        $nombre = $_POST['nombre'];
-        $edad = $_POST['edad'];
-        $email = $_POST['email'];
-        $imagen = $_POST['imagen'];
-        $profesionId = $_POST['profesionId'];
+        $nombre = mysqli_real_escape_string($db, $_POST['nombre']);
+        $edad = mysqli_real_escape_string($db, $_POST['edad']);
+        $email = mysqli_real_escape_string($db, $_POST['email']);
+        $profesionId = mysqli_real_escape_string($db, $_POST['profesionId']);
+        $imagen = $_FILES['imagen'];
 
         //Verificamos si se diligenció cada uno de los campos
         if(!$nombre){
@@ -42,12 +42,17 @@
             $errores [] = "El campo Email es obligatorio";
         }
 
-        if(!$imagen){
-            $errores [] = "No se seleccionó ninguna imagen";
-        }
-
         if(!$profesionId){
             $errores []= "El campo Profesión es obligatorio";
+        }
+        
+        if(!$imagen['name']){
+            $errores [] = "La imagen es obligatoria";
+        }
+
+        // Validar por tamaño si es mayor a 100 KB
+        if($imagen['size' > 100000 ] || $imagen['error']){
+            $errores[] = "La imgaen es muy pesada";
         }
 
         /*Si no hay errores se procede a guardar el registro en la base de datos
@@ -83,7 +88,7 @@
     </div>
 
     <!-- Almacenamos cada una de las variables en el  -->
-    <form class="formulario" method="POST" action="">
+    <form class="formulario" method="POST" action="" enctype="multipart/form-data">
         <div class="campo">
             <label for="nombre">Nombre</label>
             <input type="text" name="nombre" id="nombre" value="<?php echo $nombre; ?>">
@@ -98,7 +103,7 @@
         </div>
         <div class="campo">
             <label for="imagen">Imagen</label>
-            <input type="file" name="imagen" id="imagen">
+            <input type="file" name="imagen" id="imagen" accept="image/jpeg, image/png">
         </div>
         <div class="campo">
             <label for="profesionId">Profesión</label>

@@ -6,7 +6,7 @@
 body{
     font-family: Arial, Helvetica, sans-serif;
     font-size: 17px;
-    background-image: linear-gradient( 64.5deg,  rgba(245,116,185,1) 14.7%, rgba(89,97,223,1) 88.7% );
+    background-image: linear-gradient( 63.1deg,  rgba(5,23,111,1) 16.4%, rgba(24,95,240,1) 64.5% );
     min-height: 100vh;
 }
 
@@ -21,8 +21,9 @@ main{
 .formulario{
     width:400px;
     padding:20px;
-    box-shadow: 0px 0px 5px rgb(134, 134, 134);
+    box-shadow: 0px 0px 7px rgb(255, 255, 255);
     background-color: #fff;
+    border: 0px;
 }
 
 .formulario > .campo{
@@ -76,4 +77,9 @@ main{
 
 .exito{
     background-color: rgb(0, 204, 48);
+}
+
+.revisar{
+    background-color: #fff;
+    padding: 20px;
 }
