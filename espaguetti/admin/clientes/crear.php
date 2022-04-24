@@ -26,8 +26,8 @@
         $nombre = mysqli_real_escape_string($db, $_POST['nombre']);
         $edad = mysqli_real_escape_string($db, $_POST['edad']);
         $email = mysqli_real_escape_string($db, $_POST['email']);
-        $profesionId = mysqli_real_escape_string($db, $_POST['profesionId']);
         $imagen = $_FILES['imagen'];
+        $profesionId = mysqli_real_escape_string($db, $_POST['profesionId']);
 
         //Verificamos si se diligenció cada uno de los campos
         if(!$nombre){
@@ -61,14 +61,29 @@
           guardaremos el nombre de la imagen en la base de datos */
         if(empty($errores)){
 
+            /*SUBIDA DE ARCHIVOS */
+
+            //Crear una carpeta
+            $carpetaImagenes = '../../imagenes';
+
+            //Si no existe la carpeta imagenes se debe crear
+            if (!is_dir($carpetaImagenes)){
+                mkdir($carpetaImagenes);
+            }
+
+            //Una vez creada la carpeta, empezamos subir el archivo seleccionado al servidor
+            move_uploaded_file($imagen['tmp_name'], $carpetaImagenes . '/archivo.jpg');
+            //NOTA: Al mover un mismo archivo con el mismo nombre 2 veces se reemplaza el archivo en la carpeta imagenes
+
+            //Preparamos la sentencia SQL para insertarlo en la base de datos.
             $query = "INSERT INTO tblcliente ( nombre, edad, email, imagen, profesionId) VALUES (";
-            $query .= "'${nombre}', ${edad}, '${email}', '${imagen}', '${profesionId}' )";
+            $query .= "'${nombre}', ${edad}, '${email}', '" . $imagen['name'] . "', '${profesionId}' )";
             
             //Insertar el resgistro en la base de datos
             $resultado = mysqli_query($db, $query);
 
             if ($resultado){
-                //Redireccionar al usuario
+                //Redireccionar al usuario cuando el registro se guarda exitosamente
                 header('Location: /admin');
             }
         }    
