@@ -1,20 +1,35 @@
 <?php
+    $id = $_GET['id'];
+    $id = filter_var($id, FILTER_VALIDATE_INT);
+
+    if(!$id){
+        header('Location: /admin');
+    }
 
     include __DIR__ . '/../../includes/encabezado.php';
 
     //incluimos la conexión de la base de datos 
     $db = conectardb();
 
-    //Consultar las profesiones para listarlas en el select del formulario
+    //Obtener los datos del cliente
+    //Escribir el Query
+    $query = "SELECT cl.id, cl.nombre, cl.edad, cl.email, cl.imagen, cl.profesionId, p.id as 'idprofesion', p.nombre as 'profesion' ";
+    $query .= " FROM tblcliente as cl, tblprofesion as p ";
+    $query .= " WHERE cl.profesionId=p.id ";
+    $query .= " AND cl.id=${id} ";
+    $resultado = mysqli_query($db, $query);
+    $cliente=mysqli_fetch_assoc($resultado);
+
+    //Obtener los datos de las profesiones para listarlas en el SELECT
     $profesiones = "SELECT * FROM tblprofesion ORDER BY nombre ASC";
     $resultado = mysqli_query($db, $profesiones);
 
-    //Inicializamos las variables en blanco ya que estas se encuentra en el atributo value del formulario
-    $nombre = "";
-    $edad = "";
-    $email = "";
-    $imagen = "";
-    $profesionId = "";
+    //Inicializamos las variables con los datos que debe cargar el formulario
+    $nombre = $cliente['nombre'];
+    $edad = $cliente['edad'];
+    $email = $cliente['email'];
+    $imagen = $cliente['imagen'];
+    $profesionId = $cliente['profesionId'];
 
     //Creamos un arreglo de errores 
     $errores = [];
@@ -96,7 +111,7 @@
 ?>
 
 <main class="main-cc">
-    <h1>Crear cliente</h1>
+    <h1>Actualizar Cliente</h1>
     <!-- Verificamos si existen el arreglo $errores contiene algún mensaje almacenado -->
     <div class="notificacion">
         <?php foreach ($errores as $error) : ?>
@@ -125,6 +140,11 @@
         <div class="campo">
             <label for="imagen">Imagen</label>
             <input type="file" name="imagen" id="imagen" accept="image/jpeg, image/png">
+        </div>
+        <div class="campo">
+            <figure>
+                <img src="../../imagenes/<?php echo $imagen; ?>" alt="">
+            </figure>
         </div>
         <div class="campo">
             <label for="profesionId">Profesión</label>
