@@ -41,8 +41,9 @@
         $nombre = mysqli_real_escape_string($db, $_POST['nombre']);
         $edad = mysqli_real_escape_string($db, $_POST['edad']);
         $email = mysqli_real_escape_string($db, $_POST['email']);
-        $imagen = $_FILES['imagen'];
         $profesionId = mysqli_real_escape_string($db, $_POST['profesionId']);
+        //Obtenemos el arreglo de la nueva imagen
+        $nuevaImagen = $_FILES['imagen'];
 
         //Verificamos si se diligenció cada uno de los campos
         if(!$nombre){
@@ -61,19 +62,19 @@
             $errores []= "El campo Profesión es obligatorio";
         }
         
-        if(!$imagen['name']){
-            $errores [] = "La imagen es obligatoria";
+        if($nuevaImagen['name']){
+
+            // Validar si la imagen fue seleccionada
+            if($nuevaImagen['error']){
+                $errores[] = "La imagen no se cargó";
+            }
+    
+            // Validar por tamaño si es mayor a 100 KB
+            if($nuevaImagen['size']  > 1000000){
+                $errores[] = "La imagen es muy pesada";
+            }            
         }
 
-        // Validar si la imagen fue seleccionada
-        if($imagen['error']){
-            $errores[] = "La imagen no se cargó";
-        }
-
-        // Validar por tamaño si es mayor a 100 KB
-        if($imagen['size']  > 1000000){
-            $errores[] = "La imagen es muy pesada";
-        }
 
         /*Si no hay errores se procede a subir el archivo 
          al servidor y guardar el registro en la base de datos*/
@@ -88,23 +89,41 @@
                 mkdir($carpetaImagenes);
             }
 
-            //Crear un nombre único 
-            $nombreImagen = md5( uniqid( rand(), true) ) . ".jpg";
+            //Inicializamos en este punto la variable $nombreImagen, con el fin de aisgnarle un valor dependiendo de la condicion que se cumpla, con el fin de guardar ese nombre en la base de datos
+            $nombreImagen = '';
 
-            //Una vez creada la carpeta, movemos el archivo que quedó en memoria y lo pasamos a la carpeta destinada en el servidor
-            move_uploaded_file($imagen['tmp_name'], $carpetaImagenes . '/' . $nombreImagen);
-            //NOTA: Al mover un mismo archivo con el mismo nombre 2 veces se reemplaza el archivo en la carpeta imagenes
+            //Verificamos si el usuario cargó una nueva imagen
+            if ($nuevaImagen['name']){
+                //Eliminar la imagen que ya estaba en el servidor vuyo nombre lo guardamos en la variable $imagenes
+                unlink($carpetaImagenes . "/" . $imagen);
+
+                //Agregar la imagen seleccionada por el usuario
+                //Crear un nombre único 
+                $nombreImagen = md5( uniqid( rand(), true) ) . ".jpg";
+
+                //Una vez creada la carpeta, movemos el archivo que quedó en memoria y lo pasamos a la carpeta destinada en el servidor
+                move_uploaded_file($nuevaImagen['tmp_name'], $carpetaImagenes . '/' . $nombreImagen);
+                
+            }else{
+                //Si el usuario no seleccionó una nueva imagen, entonces asignamos el nombre que se encontraba guardado en la base de datos, para que se siga manteniendo el mismo dato en la base de datos.
+                $nombreImagen = $imagen;
+            }
 
             //Preparamos la sentencia SQL para insertarlo en la base de datos.
-            $query = "INSERT INTO tblcliente ( nombre, edad, email, imagen, profesionId) VALUES (";
-            $query .= "'${nombre}', ${edad}, '${email}', '${nombreImagen}', ${profesionId} )";
+            $query = "UPDATE tblcliente SET ";
+            $query .= " nombre = '${nombre}' , ";
+            $query .= " edad = ${edad} , ";
+            $query .= " email = '${email}' , ";
+            $query .= " imagen = '${nombreImagen}' , ";
+            $query .= " profesionId = ${profesionId} ";
+            $query .= " WHERE id = ${id} ";
             
             //Insertar el resgistro en la base de datos
             $resultado = mysqli_query($db, $query);
 
             if ($resultado){
                 //Redireccionar al usuario cuando el registro se guarda exitosamente
-                header('Location: /admin?resultado=1');
+                header('Location: /admin?resultado=2');
             }
         }    
     }
@@ -124,7 +143,7 @@
     </div>
 
     <!-- Almacenamos cada una de las variables en el  -->
-    <form class="formulario" method="POST" action="" enctype="multipart/form-data">
+    <form class="formulario" method="POST" enctype="multipart/form-data">
         <div class="campo">
             <label for="nombre">Nombre</label>
             <input type="text" name="nombre" id="nombre" value="<?php echo $nombre; ?>">

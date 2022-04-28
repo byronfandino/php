@@ -137,6 +137,8 @@ main{
 .boton-rojo-block{
     display: block;
     background-color: #C0392B;
+    border-width:0px;
+    width: 100%;
 }
 
 .tablaClientes{

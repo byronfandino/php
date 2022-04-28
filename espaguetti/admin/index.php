@@ -14,6 +14,9 @@
     //Verificamos si existe la variable resultado
     $resultado = $_GET['resultado'] ?? null;
 
+    if($_SERVER['REQUEST_METHOD'] === 'POST' ){
+        
+    }
 ?>
 
 <main class="main-ct">
@@ -23,11 +26,21 @@
     <?php if (intval($resultado) === 1) : ?>
             <div class="notificacion">
                 <div class="alerta exito">
-                    <p>
-                        <?php echo "Registro creado correctamente"; ?>
-                    </p>
+                    <p> <?php echo "Registro creado correctamente"; ?> </p>
                 </div>
             </div>
+    <?php elseif (intval($resultado) === 2) : ?>
+        <div class="notificacion">
+            <div class="alerta exito">
+                <p> <?php echo "Registro actualizado correctamente"; ?> </p>
+            </div>
+        </div>
+    <?php elseif (intval($resultado) === 3) : ?>
+        <div class="notificacion">
+            <div class="alerta exito">
+                <p> <?php echo "Registro eliminado correctamente"; ?> </p>
+            </div>
+        </div>
     <?php endif; ?>
 
     <div class="navegacion">
@@ -59,7 +72,11 @@
                 <td><?php echo $registro['profesion']; ?></td>
                 <td>
                     <a href="admin/clientes/actualizar.php?id=<?php echo $registro['id']; ?>" class="boton boton-amarillo-block">Actualizar</a>
-                    <a href="admin/clientes/eliminar.php?id=<?php echo $registro['id']; ?>" class="boton boton-rojo-block">Eliminar</a>
+                    
+                    <form method="POST" class="w-100">
+                        <input type="hidden" name="id" value="<?php echo $registro['id']; ?>">
+                        <input type="submit" value="Eliminar" class="boton boton-rojo-block">
+                    </form>
                 </td>
             </tr>
             <?php endwhile;?>
