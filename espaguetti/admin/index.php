@@ -15,7 +15,29 @@
     $resultado = $_GET['resultado'] ?? null;
 
     if($_SERVER['REQUEST_METHOD'] === 'POST' ){
-        
+        $id = $_POST['id'];
+        //Siembre hay que realizar la validación de entero para evitar injección SQL
+        $id = filter_var($id, FILTER_VALIDATE_INT);
+
+        if($id){
+
+            //Eliminar el archivo 
+            $query = "SELECT imagen FROM tblcliente WHERE id = {$id}";
+            $resultado = mysqli_query($db, $query);
+            
+            $cliente = mysqli_fetch_assoc($resultado);
+
+            unlink('../imagenes/' . $cliente['imagen']);
+
+
+            //Eliminar la propiedad
+            $query = "DELETE FROM tblcliente WHERE id = ${id}";
+            $resultado = mysqli_query($db, $query);
+
+            if ($resultado){
+                header ('Location: /admin?resultado=3');
+            }
+        }
     }
 ?>
 
@@ -44,7 +66,7 @@
     <?php endif; ?>
 
     <div class="navegacion">
-        <a href="/admin/propiedades/crear.php" class="boton boton-verde">Nuevo cliente</a>
+        <a href="/admin/clientes/crear.php" class="boton boton-verde">Nuevo cliente</a>
     </div>
 
     <table class="tablaClientes">
