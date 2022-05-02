@@ -1,4 +1,12 @@
 <?php
+
+    include __DIR__ .'/../../includes/funciones.php';
+    $auth = autenticado();
+
+    if (!$auth){
+        header('Location: /'); 
+    }
+
     $id = $_GET['id'];
     $id = filter_var($id, FILTER_VALIDATE_INT);
 

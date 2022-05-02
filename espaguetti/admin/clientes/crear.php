@@ -1,4 +1,10 @@
 <?php
+    include __DIR__ .'/../../includes/funciones.php';
+    $auth = autenticado();
+
+    if (!$auth){
+        header('Location: /');
+    }
 
     include __DIR__ . '/../../includes/encabezado.php';
 

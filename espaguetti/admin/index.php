@@ -1,6 +1,15 @@
 <?php
+
+    include __DIR__ . '/../includes/funciones.php';
+
+    $auth = autenticado();
+
+    if (!$auth){
+        header('Location: /');
+    }
+
     //En el encabezado está la conexión a la base de datos
-    include '../includes/encabezado.php';
+    include __DIR__ . '/../includes/encabezado.php';
     $db = conectardb();
 
     //Escribir el Query
