@@ -1,0 +1,19 @@
+{
+    "name": "papeleria/bienes-raices-poo_php_refactor_fin",
+    "description": "Creando un proyecto POO",
+    "type": "project",
+    "authors": [
+        {
+            "name": "Byron Fandiño MOrales",
+            "email": "byronfandino@hotmail.com"
+        }
+    ],
+    "require": {
+        "intervention/image": "^2.7"
+    },
+    "autoload": {
+        "psr-4": {
+            "App\\": "./classes"
+        }
+    }
+}
