@@ -18,7 +18,7 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="../build/css/app.css">
+    <link rel="stylesheet" href="build/css/app.css">
     <title>Bienes Raíces</title>
 </head>
 <body>
@@ -67,6 +67,6 @@
         <p class="copyright">Todos los derechos reservados <?php echo date('Y'); ?> &copy</p>
     </footer>
 
-    <script src="../build/js/bundle.min.js"></script>
+    <script src="build/js/bundle.min.js"></script>
 </body>
 </html>

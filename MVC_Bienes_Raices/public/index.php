@@ -5,8 +5,8 @@
 use Controllers\LoginController;
 use Controllers\PaginasController;
 use MVC\Router;
-    use Controllers\PropiedadController;
-    use Controllers\VendedorController;
+use Controllers\PropiedadController;
+use Controllers\VendedorController;
 
     $router = new Router();
 
