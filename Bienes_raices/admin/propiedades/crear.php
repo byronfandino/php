@@ -30,6 +30,8 @@
         // Realiza un resize a la imagen con intervention
         if($_FILES['propiedad']['tmp_name']['imagen']) {
             $image = Image::make($_FILES['propiedad']['tmp_name']['imagen'])->fit(800,600);
+            
+            //La función setImagen() se encuentra creada en la Clase ActiveRecord que borra la imagen si existe un id del registro, y asigna al objeto actual en $this->imagen el nuevo nombre de la imagen  
             $propiedad->setImagen($nombreImagen);
         }
         

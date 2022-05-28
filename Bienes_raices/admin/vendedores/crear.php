@@ -16,7 +16,7 @@
 
         if(!preg_match('/[0-9]{10}/', $this->telefono)) {
             self::$errores[] = "Teléfono no válido";
-                    }
+        }
 
         // Validar
         $errores = $vendedor->validar();

@@ -30,13 +30,13 @@
     // Ejecutar el código después de que el usuario envia el formulario
     if($_SERVER['REQUEST_METHOD'] === 'POST') {
 
-        // Asignar los atributos
+        // En el formulario donde se obtienen los datos por parte del usuario final, cada uno de los campos se asignó en el name de propiedad[nombreCampo], de tal manera que obtenemos un arreglo cuyo primer elemento se llama propiedad, por lo tanto, asignamos ese primer arreglo asociativo a la variable $args
         $args = $_POST['propiedad'];
 
+        //Se debe sincronizar porque ya se había creado un objeto al momento de buscar el id del registro y por lo tanto es necesario actualizar los datos escritos en el formulario por parte del usuario al objeto que ya estaba creadoo para guardar posteriormente los datos del objeto en la base de datos 
         $propiedad->sincronizar($args);
 
-
-        // Validación
+        // Con el objeto actualizado realizamos la validación
         $errores = $propiedad->validar();
 
         // Subida de archivos

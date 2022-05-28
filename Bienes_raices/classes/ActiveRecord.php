@@ -11,7 +11,6 @@ class ActiveRecord {
 
     // Errores
     protected static $errores = [];
-
     
     // Definir la conexión a la BD
     public static function setDB($database) {
@@ -22,6 +21,7 @@ class ActiveRecord {
     public static function getErrores() {
         return static::$errores;
     }
+
     public function validar() {
         static::$errores = [];
         return static::$errores;
@@ -38,15 +38,14 @@ class ActiveRecord {
         }
     }
 
+    // Listar todos los registros de la tabla seleccionada
     public static function all() {
         $query = "SELECT * FROM " . static::$tabla;
-
         $resultado = self::consultarSQL($query);
-
         return $resultado;
     }
 
-    // Busca un registro por su id
+    // Obtener un solo registro
     public static function find($id) {
         $query = "SELECT * FROM " . static::$tabla  ." WHERE id = ${id}";
 
@@ -67,7 +66,7 @@ class ActiveRecord {
         $query .= join("', '", array_values($atributos));
         $query .= " ') ";
 
-        // Resultado de la consulta
+        // Ejecutar el query
         $resultado = self::$db->query($query);
 
         // Mensaje de exito
@@ -77,6 +76,7 @@ class ActiveRecord {
         }
     }
 
+    // Actualizar el registro
     public function actualizar() {
 
         // Sanitizar los datos
@@ -86,7 +86,7 @@ class ActiveRecord {
         foreach($atributos as $key => $value) {
             $valores[] = "{$key}='{$value}'";
         }
-
+ 
         $query = "UPDATE " . static::$tabla ." SET ";
         $query .=  join(', ', $valores );
         $query .= " WHERE id = '" . self::$db->escape_string($this->id) . "' ";
@@ -103,7 +103,7 @@ class ActiveRecord {
     // Eliminar un registro
     public function eliminar() {
         // Eliminar el registro
-        $query = "DELETE FROM "  . static::$tabla . " WHERE id = " . self::$db->escape_string($this->id) . " LIMIT 1";
+        $query = "DELETE FROM " . static::$tabla . " WHERE id = " . self::$db->escape_string($this->id) . " LIMIT 1";
         $resultado = self::$db->query($query);
 
         if($resultado) {
@@ -119,6 +119,7 @@ class ActiveRecord {
         // Iterar los resultados
         $array = [];
         while($registro = $resultado->fetch_assoc()) {
+            //Asignamos a array[] un nuevo objeto por cada registro encontrado en la base de datos, obteniendo al final un arreglo de objetos 
             $array[] = static::crearObjeto($registro);
         }
 
@@ -129,6 +130,7 @@ class ActiveRecord {
         return $array;
     }
 
+    //Se crea un objeto para asignar los valores del arreglo que contiene los datos del registro, con el fin de aplicar el ActiveRecord de guardar en memoria un objeto con la misma estructura que la base de datos.
     protected static function crearObjeto($registro) {
         $objeto = new static;
 
@@ -141,9 +143,7 @@ class ActiveRecord {
         return $objeto;
     }
 
-
-
-    // Identificar y unir los atributos de la BD
+    //Crear un arreglo asociativo con los nombres de las columnas de la base de datos como llaves; y con los datos que provienen del formulario como los valores
     public function atributos() {
         $atributos = [];
         foreach(static::$columnasDB as $columna) {
@@ -153,6 +153,7 @@ class ActiveRecord {
         return $atributos;
     }
 
+    //Sanitizamos los varlores del arreglo asociativo y lo agregamos a un nuevo arreglo
     public function sanitizarAtributos() {
         $atributos = $this->atributos();
         $sanitizado = [];
@@ -162,6 +163,7 @@ class ActiveRecord {
         return $sanitizado;
     }
 
+    // Se utiliza la función sincronizar para actualizar los datos de un objeto que ya se había creado, y que proviene del método POST como un arreglo asociativo; por lo tanto únicamente se utilizará en el formulario de actualizar registro.
     public function sincronizar($args=[]) { 
         foreach($args as $key => $value) {
           if(property_exists($this, $key) && !is_null($value)) {
@@ -191,3 +193,4 @@ class ActiveRecord {
         }
     }
 }
+
